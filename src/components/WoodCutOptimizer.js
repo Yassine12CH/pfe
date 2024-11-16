@@ -1,55 +1,111 @@
-// src/components/WoodCutOptimizer.js
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const WoodCutOptimizer = () => {
-  const [width, setWidth] = useState('');
-  const [height, setHeight] = useState('');
-  const [segments, setSegments] = useState(''); // Nouvel état pour le nombre de segments
-  const [results, setResults] = useState(null); // Pour stocker les résultats de l'optimisation
+  const [width, setWidth] = useState(''); // Largeur du panneau global
+  const [height, setHeight] = useState(''); // Hauteur du panneau global
+  const [sections, setSections] = useState([]); // Liste des sections
+  const [results, setResults] = useState(null); // Résultats d'optimisation
+  const [errorMessage, setErrorMessage] = useState(null);
+  const canvasRef = useRef(null); // Référence pour le canvas
 
-  const handleOptimize = () => {
-    // Vérification de validité des entrées
+  const handleAddSection = () => {
+    setSections([...sections, { sectionWidth: '', sectionHeight: '' }]);
+  };
+
+  const handleRemoveSection = (index) => {
+    const newSections = [...sections];
+    newSections.splice(index, 1);
+    setSections(newSections);
+  };
+
+  const handleOptimize = async () => {
     const panelWidth = parseFloat(width);
     const panelHeight = parseFloat(height);
-    const numSegments = parseInt(segments, 10);
 
     if (isNaN(panelWidth) || isNaN(panelHeight) || panelWidth <= 0 || panelHeight <= 0) {
-      alert("Veuillez entrer des dimensions valides pour la largeur et la hauteur.");
+      setErrorMessage("Veuillez entrer des dimensions valides pour la largeur et la hauteur.");
       return;
     }
 
-    if (isNaN(numSegments) || numSegments <= 0) {
-      alert("Veuillez entrer un nombre valide de segments.");
+    const sectionDimensions = sections.map((section) => ({
+      width: parseFloat(section.sectionWidth),
+      height: parseFloat(section.sectionHeight),
+    }));
+
+    if (sectionDimensions.some((section) => isNaN(section.width) || isNaN(section.height) || section.width <= 0 || section.height <= 0)) {
+      setErrorMessage("Veuillez entrer des dimensions valides pour toutes les sections.");
       return;
     }
 
-    // Simuler l'algorithme d'optimisation
-    const optimalCuts = calculateOptimalCuts(panelWidth, panelHeight, numSegments);
+    try {
+      const response = await fetch("http://127.0.0.1:5000/optimize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          width: panelWidth,
+          height: panelHeight,
+          sections: sectionDimensions,
+        }),
+      });
 
-    // Stocker les résultats dans l'état
-    setResults(optimalCuts);
-  };
-
-  // Fonction pour calculer un agencement optimal
-  const calculateOptimalCuts = (panelWidth, panelHeight, numSegments) => {
-    const cuts = [];
-
-    // Logique simple pour diviser le panneau en `numSegments` sections
-    const pieceWidth = panelWidth / numSegments;
-    const pieceHeight = panelHeight / numSegments;
-
-    for (let i = 0; i < numSegments; i++) {
-      cuts.push({ width: pieceWidth, height: pieceHeight });
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrorMessage(errorData.error || "Erreur lors de l'optimisation des découpes.");
+      } else {
+        const data = await response.json();
+        setResults(data.cuts);
+        setErrorMessage(null);
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+      setErrorMessage("Erreur inconnue lors de l'optimisation des découpes.");
     }
-
-    return cuts;
   };
+
+  useEffect(() => {
+    if (results && canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      const totalWidth = parseFloat(width);
+      const totalHeight = parseFloat(height);
+
+      // Effacez le canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Dessinez le panneau global
+      ctx.fillStyle = '#D3D3D3';
+      ctx.fillRect(0, 0, totalWidth, totalHeight);
+
+      results.forEach((cut, index) => {
+        const color = `hsl(${index * 137.5 % 360}, 70%, 50%)`; // Couleur unique
+        ctx.fillStyle = color;
+        ctx.fillRect(cut.x, cut.y, cut.width, cut.height);
+
+        // Afficher les dimensions
+        const label = `${cut.width.toFixed(0)} x ${cut.height.toFixed(0)}`;
+        ctx.fillStyle = 'black';
+        ctx.font = '10px Arial';
+
+          // Dimensions au milieu
+          const textX = cut.x + cut.width / 2 - ctx.measureText(label).width / 2;
+          const textY = cut.y + cut.height / 2 + 4; // Centré verticalement
+          ctx.fillText(label, textX, textY);
+
+        // Afficher l'identifiant de la section
+        const idLabel = `S${cut.id + 1}`;
+        ctx.fillStyle = 'white';
+        ctx.fillText(idLabel, cut.x + 5, cut.y + 15);
+      });
+    }
+  }, [results, width, height]);
 
   return (
     <div>
       <h2>Optimisation des Coupes de Bois</h2>
       <label>
-        Largeur:
+        Largeur du panneau global:
         <input
           type="number"
           value={width}
@@ -57,22 +113,55 @@ const WoodCutOptimizer = () => {
         />
       </label>
       <label>
-        Hauteur:
+        Hauteur du panneau global:
         <input
           type="number"
           value={height}
           onChange={(e) => setHeight(e.target.value)}
         />
       </label>
-      <label>
-        Nombre de segments:
-        <input
-          type="number"
-          value={segments}
-          onChange={(e) => setSegments(e.target.value)}
-        />
-      </label>
+
+      <h3>Ajouter des sections à découper</h3>
+      {sections.map((section, index) => (
+        <div key={index}>
+          <label>
+            Largeur de la section {index + 1}:
+            <input
+              type="number"
+              value={section.sectionWidth}
+              onChange={(e) => {
+                const newSections = [...sections];
+                newSections[index].sectionWidth = e.target.value;
+                setSections(newSections);
+              }}
+            />
+          </label>
+          <label>
+            Hauteur de la section {index + 1}:
+            <input
+              type="number"
+              value={section.sectionHeight}
+              onChange={(e) => {
+                const newSections = [...sections];
+                newSections[index].sectionHeight = e.target.value;
+                setSections(newSections);
+              }}
+            />
+          </label>
+          <button onClick={() => handleRemoveSection(index)}>Supprimer cette section</button>
+        </div>
+      ))}
+      <button onClick={handleAddSection}>Ajouter une section</button>
       <button onClick={handleOptimize}>Optimiser</button>
+
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+
+      <canvas
+        ref={canvasRef}
+        width={parseFloat(width)}
+        height={parseFloat(height)}
+        style={{ border: '1px solid black', marginTop: '20px' }}
+      ></canvas>
 
       {results && (
         <div>

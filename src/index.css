@@ -1,9 +1,13 @@
-/* Global styles */
+*{
+  margin: 0;
+  padding: 0;
+}
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f4f4f4;
   margin: 0;
   padding-top: 20px;
+  padding-bottom: 20px;
   justify-content: center;
   box-sizing: border-box;
   color: #333;
@@ -11,6 +15,7 @@ body {
 h1{
   text-align: center;
   color: #2c3e50; 
+  padding-bottom: 20px;
 }
 h2, h3 {
   text-align: start;
@@ -28,7 +33,7 @@ h2, h3 {
 
 label{
   display: flex;
-  flex-direction: column; /* Les éléments dans chaque carte sont alignés verticalement */
+  flex-direction: column; /* Les éléments dans chaque label sont alignés verticalement */
   justify-content: space-between;
   width: 92%;
   background-color: #ffffff;
@@ -39,9 +44,9 @@ label{
 
 #labels {
   display: flex;
-  flex-direction: row; /* Aligner les cartes en ligne */
-  flex-wrap: wrap; /* Permettre aux cartes de revenir à la ligne si nécessaire */
-  gap: 10px; /* Espacement entre les cartes */
+  flex-direction: row; /* Aligner les labels en ligne */
+  flex-wrap: wrap; /* Permettre aux labels de revenir à la ligne si nécessaire */
+  gap: 10px; /* Espacement entre les labels */
   width: 1150px;
   padding: 10px;
   background-color: #ecf0f1;
@@ -49,23 +54,23 @@ label{
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Chaque carte */
+/* Chaque label */
 .label {
   display: flex;
-  flex-direction: column; /* Les éléments dans chaque carte sont alignés verticalement */
+  flex-direction: column;
   align-items: self-start;
   justify-content: start;
-  width: 250px; /* Largeur fixe de chaque carte */
+  width: 250px; /* Largeur fixe de chaque label */
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 15px;
-  gap: 10px; /* Espacement entre les éléments dans la carte */
+  gap: 10px; /* Espacement entre les éléments dans la label*/
 }
 
 /* Input fields */
 input[type="number"] {
-  width: 90%; /* Prend toute la largeur disponible dans la carte */
+  width: 90%; /* Prend toute la largeur disponible dans la label */
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -139,28 +144,28 @@ ul li {
 /* Responsive design */
 @media (max-width: 768px) {
   #labels {
-    flex-direction: column; /* Empiler les cartes verticalement */
+    flex-direction: column;
     align-items: self-start;
-    width: 100%; /* Utiliser toute la largeur disponible */
+    width: 100%;
   }
 
   .label {
-    width: 90%; /* Réduire la largeur des cartes sur les tablettes */
-    padding: 10px; /* Réduire le padding pour économiser l'espace */
+    width: 90%;
+    padding: 10px;
   }
 
   input[type="number"] {
-    width: 100%; /* Champ de saisie prend toute la largeur disponible */
+    width: 100%;
   }
 
   button {
-    width: 100%; /* Les boutons occupent toute la largeur */
-    padding: 8px; /* Ajuster le padding pour un meilleur rendu */
+    width: 100%;
+    padding: 8px;
   }
 
   ul li {
-    width: 45%; /* Cartes des résultats prennent moins de place */
-    font-size: 13px; /* Réduire légèrement la taille du texte */
+    width: 45%;
+    font-size: 13px;
   }
 }
 
@@ -171,15 +176,15 @@ ul li {
   }
 
   .label {
-    width: 100%; /* Les cartes prennent toute la largeur */
+    width: 100%;
   }
 
   ul li {
-    width: 100%; /* Chaque carte de résultat prend toute la largeur */
-    font-size: 12px; /* Texte encore plus réduit pour les très petits écrans */
+    width: 100%;
+    font-size: 12px;
   }
 
   button {
-    font-size: 13px; /* Adapter la taille des boutons pour mobiles */
+    font-size: 13px;
   }
 }

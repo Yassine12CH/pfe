@@ -53,6 +53,7 @@ label{
 .label {
   display: flex;
   flex-direction: column; /* Les éléments dans chaque carte sont alignés verticalement */
+  align-items: self-start;
   justify-content: start;
   width: 250px; /* Largeur fixe de chaque carte */
   background-color: #ffffff;
@@ -133,4 +134,52 @@ ul li {
   border-radius: 8px;
   font-size: 14px;
   color: #34495e;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #labels {
+    flex-direction: column; /* Empiler les cartes verticalement */
+    align-items: self-start;
+    width: 100%; /* Utiliser toute la largeur disponible */
+  }
+
+  .label {
+    width: 90%; /* Réduire la largeur des cartes sur les tablettes */
+    padding: 10px; /* Réduire le padding pour économiser l'espace */
+  }
+
+  input[type="number"] {
+    width: 100%; /* Champ de saisie prend toute la largeur disponible */
+  }
+
+  button {
+    width: 100%; /* Les boutons occupent toute la largeur */
+    padding: 8px; /* Ajuster le padding pour un meilleur rendu */
+  }
+
+  ul li {
+    width: 45%; /* Cartes des résultats prennent moins de place */
+    font-size: 13px; /* Réduire légèrement la taille du texte */
+  }
+}
+
+@media (max-width: 480px) {
+  #labels {
+    gap: 5px; /* Réduire l'espacement entre les cartes */
+    align-items: self-start;
+  }
+
+  .label {
+    width: 100%; /* Les cartes prennent toute la largeur */
+  }
+
+  ul li {
+    width: 100%; /* Chaque carte de résultat prend toute la largeur */
+    font-size: 12px; /* Texte encore plus réduit pour les très petits écrans */
+  }
+
+  button {
+    font-size: 13px; /* Adapter la taille des boutons pour mobiles */
+  }
 }

@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import '../index.css';
 
-const WoodCutOptimizer = () => {
+
+function WoodCutOptimizer() {
   const [width, setWidth] = useState(''); // Largeur du panneau global
   const [height, setHeight] = useState(''); // Hauteur du panneau global
   const [sections, setSections] = useState([]); // Liste des sections
@@ -88,10 +90,10 @@ const WoodCutOptimizer = () => {
         ctx.fillStyle = 'black';
         ctx.font = '10px Arial';
 
-          // Dimensions au milieu
-          const textX = cut.x + cut.width / 2 - ctx.measureText(label).width / 2;
-          const textY = cut.y + cut.height / 2 + 4; // Centré verticalement
-          ctx.fillText(label, textX, textY);
+        // Dimensions au milieu
+        const textX = cut.x + cut.width / 2 - ctx.measureText(label).width / 2;
+        const textY = cut.y + cut.height / 2 + 4; // Centré verticalement
+        ctx.fillText(label, textX, textY);
 
         // Afficher l'identifiant de la section
         const idLabel = `S${cut.id + 1}`;
@@ -103,54 +105,59 @@ const WoodCutOptimizer = () => {
 
   return (
     <div>
-      <h2>Optimisation des Coupes de Bois</h2>
+      <h2>Bois Globale</h2>
       <label>
         Largeur du panneau global:
         <input
           type="number"
           value={width}
-          onChange={(e) => setWidth(e.target.value)}
-        />
+          onChange={(e) => setWidth(e.target.value)} />
       </label>
       <label>
         Hauteur du panneau global:
         <input
           type="number"
           value={height}
-          onChange={(e) => setHeight(e.target.value)}
-        />
+          onChange={(e) => setHeight(e.target.value)} />
       </label>
 
       <h3>Ajouter des sections à découper</h3>
-      {sections.map((section, index) => (
-        <div key={index}>
-          <label>
-            Largeur de la section {index + 1}:
-            <input
-              type="number"
-              value={section.sectionWidth}
-              onChange={(e) => {
-                const newSections = [...sections];
-                newSections[index].sectionWidth = e.target.value;
-                setSections(newSections);
-              }}
-            />
-          </label>
-          <label>
-            Hauteur de la section {index + 1}:
-            <input
-              type="number"
-              value={section.sectionHeight}
-              onChange={(e) => {
-                const newSections = [...sections];
-                newSections[index].sectionHeight = e.target.value;
-                setSections(newSections);
-              }}
-            />
-          </label>
-          <button onClick={() => handleRemoveSection(index)}>Supprimer cette section</button>
-        </div>
-      ))}
+      <div id="labels">
+        {sections.map((section, index) => (
+          <div className="label" key={index}>
+            <label>
+              Largeur de la section {index + 1}:
+              <input
+                type="number"
+                value={section.sectionWidth}
+                onChange={(e) => {
+                  const newSections = [...sections];
+                  newSections[index].sectionWidth = e.target.value;
+                  setSections(newSections);
+                }}
+              />
+            </label>
+            <label>
+              Hauteur de la section {index + 1}:
+              <input
+                type="number"
+                value={section.sectionHeight}
+                onChange={(e) => {
+                  const newSections = [...sections];
+                  newSections[index].sectionHeight = e.target.value;
+                  setSections(newSections);
+                }}
+              />
+            </label>
+            <button
+              className="remove-section"
+              onClick={() => handleRemoveSection(index)}
+            >
+              Supprimer cette section
+            </button>
+          </div>
+        ))}
+      </div>
       <button onClick={handleAddSection}>Ajouter une section</button>
       <button onClick={handleOptimize}>Optimiser</button>
 
@@ -177,6 +184,6 @@ const WoodCutOptimizer = () => {
       )}
     </div>
   );
-};
+}
 
 export default WoodCutOptimizer;

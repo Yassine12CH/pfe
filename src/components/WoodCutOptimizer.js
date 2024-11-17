@@ -104,7 +104,7 @@ function WoodCutOptimizer() {
   }, [results, width, height]);
 
   return (
-    <div>
+    <div class="container">
       <h2>Bois Globale</h2>
       <label>
         Largeur du panneau global:

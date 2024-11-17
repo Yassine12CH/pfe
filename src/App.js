@@ -1,6 +1,7 @@
 // src/App.js
 import React from 'react';
 import WoodCutOptimizer from './components/WoodCutOptimizer';
+import './index.css';
 
 function App() {
   return (

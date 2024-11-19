@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../index.css';
 
-
 function WoodCutOptimizer() {
   const [width, setWidth] = useState(''); // Largeur du panneau global
   const [height, setHeight] = useState(''); // Hauteur du panneau global
@@ -78,15 +77,15 @@ function WoodCutOptimizer() {
 
       // Dessinez le panneau global
       ctx.fillStyle = '#D3D3D3';
-      ctx.fillRect(0, 0, totalWidth, totalHeight);
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       results.forEach((cut, index) => {
         const color = `hsl(${index * 137.5 % 360}, 70%, 50%)`; // Couleur unique
         ctx.fillStyle = color;
         ctx.fillRect(cut.x, cut.y, cut.width, cut.height);
 
-        // Afficher les dimensions
-        const label = `${cut.width.toFixed(0)} x ${cut.height.toFixed(0)}`;
+        // Afficher les dimensions avec une virgule
+        const label = `${cut.width.toFixed(2).toLocaleString('fr-FR')} x ${cut.height.toFixed(2).toLocaleString('fr-FR')}`;
         ctx.fillStyle = 'black';
         ctx.font = '10px Arial';
 
@@ -104,12 +103,13 @@ function WoodCutOptimizer() {
   }, [results, width, height]);
 
   return (
-    <div class="container">
+    <div className="container">
       <h2>Bois Globale</h2>
       <label>
         Largeur du panneau global:
         <input
           type="number"
+          step="0.01"
           value={width}
           onChange={(e) => setWidth(e.target.value)} />
       </label>
@@ -117,6 +117,7 @@ function WoodCutOptimizer() {
         Hauteur du panneau global:
         <input
           type="number"
+          step="0.01"
           value={height}
           onChange={(e) => setHeight(e.target.value)} />
       </label>
@@ -129,10 +130,11 @@ function WoodCutOptimizer() {
               Largeur de la section {index + 1}:
               <input
                 type="number"
+                step="0.01"
                 value={section.sectionWidth}
                 onChange={(e) => {
                   const newSections = [...sections];
-                  newSections[index].sectionWidth = e.target.value;
+                  newSections[index].sectionWidth = parseFloat(e.target.value) || '';
                   setSections(newSections);
                 }}
               />
@@ -141,10 +143,11 @@ function WoodCutOptimizer() {
               Hauteur de la section {index + 1}:
               <input
                 type="number"
+                step="0.01"
                 value={section.sectionHeight}
                 onChange={(e) => {
                   const newSections = [...sections];
-                  newSections[index].sectionHeight = e.target.value;
+                  newSections[index].sectionHeight = parseFloat(e.target.value) || '';
                   setSections(newSections);
                 }}
               />
@@ -176,7 +179,7 @@ function WoodCutOptimizer() {
           <ul>
             {results.map((cut, index) => (
               <li key={index}>
-                Section {index + 1}: {cut.width.toFixed(2)} x {cut.height.toFixed(2)}
+                Section {index + 1}: {cut.width.toFixed(2).toLocaleString('fr-FR')} x {cut.height.toFixed(2).toLocaleString('fr-FR')}
               </li>
             ))}
           </ul>

@@ -70,7 +70,7 @@ label{
 
 /* Input fields */
 input[type="number"] {
-  width: 90%; /* Prend toute la largeur disponible dans la label */
+  width: 92%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;

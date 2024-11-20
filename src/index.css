@@ -115,10 +115,22 @@ p {
 /* Canvas container */
 canvas {
   display: block;
-  margin-top: 20px;
+  margin: 20px auto;
   max-width: 100%;
   height: auto;
+  background-color: white;
+  border: 1px solid #ccc;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out; /* Ajout d'une transition pour plus de fluidité */
 }
+
+canvas:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+
 
 /* Results Section */
 ul {
